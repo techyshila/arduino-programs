@@ -1,0 +1,38 @@
+#include <Servo.h>
+Servo servo;
+int servo_position;
+
+const int leftForward = 2;
+const int leftBackward = 3;
+const int rightForward = 4;
+const int rightBackward = 5;
+void setup() 
+{
+  servo.attach(49);
+  pinMode(leftForward, OUTPUT);
+  pinMode(leftBackward, OUTPUT);
+  pinMode(rightForward, OUTPUT);
+  pinMode(rightBackward, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(leftForward,HIGH);
+  digitalWrite(leftBackward,LOW);
+  digitalWrite(rightForward,HIGH);
+  digitalWrite(rightBackward,LOW);
+  delay(5000);
+  digitalWrite(leftForward,LOW);
+  digitalWrite(leftBackward,LOW);
+  digitalWrite(rightForward,LOW);
+  digitalWrite(rightBackward,LOW);
+  delay(1000);
+  for(servo_position=0; servo_position >= 0; servo_position +=1)
+  {servo.write(servo_position);
+  delay(10);
+  }
+  delay(5000);
+  for (servo_position=180; servo_position>=0; servo_position -=1)
+  {servo.write(servo_position);
+  delay(10);
+  }
+}
