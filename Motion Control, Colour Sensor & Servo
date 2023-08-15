@@ -1,0 +1,117 @@
+#include <Servo.h>
+
+Servo servo;
+int servo_position;
+
+const int leftForward = 2;
+const int leftBackward = 3;
+const int rightForward = 4;
+const int rightBackward = 5;
+
+const int s0 = 52;
+const int s1 = 50;
+const int s2 = 46;
+const int s3 = 44;
+const int out = 48;
+// LED pins connected to Arduino
+int redLed = 0;
+int greenLed = 0;
+int blueLed = 0;
+// Variables
+int red = 0;
+int green = 0;
+int blue = 0;
+
+void setup()
+{
+  servo.attach(42);
+  Serial.begin(9600);
+  pinMode(s0, OUTPUT);
+  pinMode(s1, OUTPUT);
+  pinMode(s2, OUTPUT);
+  pinMode(s3, OUTPUT);
+  pinMode(out, OUTPUT);
+  pinMode(redLed, OUTPUT);
+  pinMode(greenLed, OUTPUT);
+  pinMode(blueLed, OUTPUT);
+  digitalWrite(s0, HIGH);
+  digitalWrite(s1, HIGH);
+
+  pinMode(leftForward, OUTPUT);
+  pinMode(leftBackward, OUTPUT);
+  pinMode(rightForward, OUTPUT);
+  pinMode(rightBackward, OUTPUT);
+}
+void loop()
+{
+  digitalWrite(leftForward, HIGH);
+  digitalWrite(leftBackward, LOW);
+  digitalWrite(rightForward, HIGH);
+  digitalWrite(rightBackward, LOW);
+
+  color();
+  Serial.print("R Intensity:");
+  Serial.print(red, DEC);
+  Serial.print("G Intensity:");
+  Serial.print(green, DEC);
+  Serial.print("B Intensity:");
+  Serial.print(blue, DEC);
+  //Serial.println();
+
+  if (red < blue && red < green && red < 20)
+  {
+    Serial.println(" -(Red Color)");
+    digitalWrite(redLed, HIGH); // Turn RED LED ON
+    digitalWrite(greenLed, LOW);
+    digitalWrite(blueLed, LOW);
+    delay(100);
+    digitalWrite(leftForward, LOW);
+    digitalWrite(leftBackward, LOW);
+    digitalWrite(rightForward, LOW);
+    digitalWrite(rightBackward, LOW);
+    delay(500);
+
+    for (servo_position=0; servo_position <=180; servo_position +=1){
+      servo.write(servo_position);
+      delay(20);
+    }
+    for (servo_position=180; servo_position >= 0; servo_position -=1){
+      servo.write(servo_position);
+      delay(20);
+    }
+  }
+  else if (blue < red && blue < green)
+  {
+    Serial.println(" -(Blue Color)");
+    digitalWrite(redLed, LOW);
+    digitalWrite(greenLed, LOW);
+    digitalWrite(blueLed, HIGH);  // Turn BLUE LED ON
+  }
+  else if (green < red && green < blue)
+  {
+    Serial.println(" -(Green Color)");
+    digitalWrite(redLed, LOW);
+    digitalWrite(greenLed, HIGH); // Turn GREEN LED ON
+    digitalWrite(blueLed, LOW);  
+  } 
+  else{
+    Serial.println();
+  }
+  delay(300);
+  digitalWrite(redLed, LOW);
+  digitalWrite(greenLed, LOW);
+  digitalWrite(blueLed, LOW);
+  }
+void color()
+{
+  digitalWrite(s2, LOW);
+  digitalWrite(s3, LOW);
+  //count OUT, pRed, RED
+  red = pulseIn(out, digitalRead(out) == HIGH ? LOW : HIGH);
+  digitalWrite(s3, HIGH);
+  //count OUT, pBlue, BLUE
+  blue = pulseIn(out, digitalRead(out) == HIGH ? LOW : HIGH);
+   digitalWrite(s2, HIGH);
+  //count OUT, pGreen, GREEN
+  blue = pulseIn(out, digitalRead(out) == HIGH ? LOW : HIGH);
+}
